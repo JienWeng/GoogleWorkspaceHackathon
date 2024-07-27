@@ -96,9 +96,7 @@ By following these steps, you will have a fully functional sales pipeline manage
 
 For a comprehensive overview and demonstration of our project, please watch our presentation video:
 
-<div align="center">
-  <iframe width="560" height="315" src="https://www.youtube.com/embed/pMg7PYsO76I" frameborder="0" allowfullscreen></iframe>
-</div>
+[![Watch the Presentation Video](https://img.youtube.com/vi/pMg7PYsO76I/0.jpg)](https://youtu.be/pMg7PYsO76I)
 
 ## Contributing
 
