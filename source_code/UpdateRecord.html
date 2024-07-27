@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <base target="_top">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+        }
+        input, select {
+            width: 100%;
+            padding: 8px;
+            box-sizing: border-box;
+            margin-bottom: 10px;
+        }
+        button {
+            padding: 10px 15px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+            margin-right: 10px;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+<body>
+
+<h2>Update Product Information</h2>
+<form id="updateForm">
+    <label for="orderId">Order ID:</label>
+    <input type="text" id="orderId" name="orderId" required>
+    
+    <button type="button" onclick="fetchProductDetails()">Fetch Details</button>
+    
+    <div id="formFields" style="display: none;">
+        <label for="stage">Stage:</label>
+        <select id="stage" name="stage" required>
+          //
+        </select>
+        
+        <label for="value">Value (in RM):</label>
+        <input type="number" id="value" name="value" required>
+        
+        <label for="nextStep">Next Step:</label>
+        <select id="nextStep" name="nextStep" required>
+          //
+        </select>
+        
+        <button type="button" onclick="updateProduct()">Update</button>
+    </div>
+</form>
+
+<script>
+// Function to fetch dropdown data for stage and next step
+function populateDropdowns(data) {
+  var stageSelect = document.getElementById('stage');
+  var nextStepSelect = document.getElementById('nextStep');
+  
+  for (var i = 0; i < data.stages.length; i++) {
+    stageSelect.innerHTML += '<option value="' + data.stages[i] + '">' + data.stages[i] + '</option>';
+  }
+  
+  for (var j = 0; j < data.nextSteps.length; j++) {
+    nextStepSelect.innerHTML += '<option value="' + data.nextSteps[j] + '">' + data.nextSteps[j] + '</option>';
+  }
+}
+
+// Function to fetch product details based on Order ID
+function fetchProductDetails() {
+  var orderId = document.getElementById('orderId').value;
+  
+  if (!orderId) {
+    alert('Please enter a valid Order ID.');
+    return;
+  }
+  
+  google.script.run.withSuccessHandler(function(productData) {
+    if (productData) {
+      document.getElementById('stage').value = productData.stage;
+      document.getElementById('value').value = productData.value;
+      document.getElementById('nextStep').value = productData.nextStep;
+      document.getElementById('formFields').style.display = 'block';
+    } else {
+      alert('Order ID not found.');
+      document.getElementById('formFields').style.display = 'none';
+      document.getElementById('updateForm').reset();
+    }
+  }).getProductDetails(orderId);
+}
+
+// Function to update product information
+function updateProduct() {
+  var formData = {
+    orderId: document.getElementById('orderId').value,
+    stage: document.getElementById('stage').value,
+    value: document.getElementById('value').value,
+    nextStep: document.getElementById('nextStep').value
+  };
+  
+  google.script.run.withSuccessHandler(function() {
+    alert('Product information updated successfully!');
+    document.getElementById('updateForm').reset();
+    document.getElementById('formFields').style.display = 'none';
+  }).updateProduct(formData);
+}
+
+// Populate dropdowns on page load
+document.addEventListener('DOMContentLoaded', function() {
+  google.script.run.withSuccessHandler(function(data) {
+    populateDropdowns(data);
+  }).getDropdownData();
+});
+
+</script>
+
+</body>
+</html>

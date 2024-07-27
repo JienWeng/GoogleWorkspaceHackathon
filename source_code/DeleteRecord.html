@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <base target="_top">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+        }
+        input, select {
+            width: 100%;
+            padding: 8px;
+            box-sizing: border-box;
+            margin-bottom: 10px;
+        }
+        button {
+            padding: 10px 15px;
+            background-color: #ff4d4d;
+            color: white;
+            border: none;
+            cursor: pointer;
+            margin-right: 10px;
+        }
+        button:hover {
+            background-color: #ff1a1a;
+        }
+    </style>
+</head>
+<body>
+
+<h2>Delete Record</h2>
+<form id="deleteForm">
+    <label for="orderId">Order ID:</label>
+    <input type="text" id="orderId" name="orderId" required>
+    
+    <button type="button" onclick="confirmDelete()">Delete</button>
+</form>
+
+<script>
+// Function to confirm deletion
+function confirmDelete() {
+    var orderId = document.getElementById('orderId').value;
+    
+    if (confirm('Are you sure you want to delete? This action cannot be reverted.')) {
+        deleteRecord(orderId);
+    } else {
+        // Cancel deletion
+        console.log('Deletion canceled.');
+    }
+}
+
+// Function to delete a record based on Order ID
+function deleteRecord(orderId) {
+    google.script.run.withSuccessHandler(function(success) {
+        if (success) {
+            alert('Record deleted successfully!');
+            document.getElementById('deleteForm').reset();
+        } else {
+            alert('Order ID not found.');
+        }
+    }).deleteRecord(orderId);
+}
+
+</script>
+
+</body>
+</html>

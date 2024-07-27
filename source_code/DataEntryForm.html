@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <base target="_top">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+        }
+        input, select {
+            width: 100%;
+            padding: 8px;
+            box-sizing: border-box;
+            margin-bottom: 10px;
+        }
+        button {
+            padding: 10px 15px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+<body>
+
+<h2>Data Entry Form</h2>
+<form id="dataForm">
+    <label for="companyName">Company Name:</label>
+    <input type="text" id="companyName" name="companyName" required>
+    
+    <label for="contactName">Contact Name:</label>
+    <input type="text" id="contactName" name="contactName" required>
+    
+    <label for="contactEmail">Contact Email:</label>
+    <input type="email" id="contactEmail" name="contactEmail" pattern="[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$" title="Enter a valid email address" required>
+    
+    <label for="value">Value (in RM):</label>
+    <input type="number" id="value" name="value" required>
+    
+    <label for="teamMember">Team Member:</label>
+    <select id="teamMember" name="teamMember" required>
+      // team member at here
+    </select>
+    
+    <button type="button" onclick="submitForm()">Submit</button>
+    <button type="button" onclick="refresh()">Refresh</button>
+</form>
+
+<script>
+// Function to populate team member dropdown
+function populateTeamMembers() {
+  google.script.run.withSuccessHandler(function(teamMembers) {
+    var select = document.getElementById('teamMember');
+    for (var i = 0; i < teamMembers.length; i++) {
+      select.innerHTML += '<option value="' + teamMembers[i] + '">' + teamMembers[i] + '</option>';
+    }
+  }).getTeamMembers();
+}
+
+// Populate team members on page load
+document.addEventListener('DOMContentLoaded', function() {
+  populateTeamMembers();
+});
+
+function submitForm() {
+  var formData = {
+    companyName: document.getElementById('companyName').value,
+    contactName: document.getElementById('contactName').value,
+    contactEmail: document.getElementById('contactEmail').value,
+    value: document.getElementById('value').value,
+    teamMember: document.getElementById('teamMember').value
+  };
+
+  // Validate email using HTML5 pattern attribute
+  var emailInput = document.getElementById('contactEmail');
+  if (!emailInput.checkValidity()) {
+    alert('Please enter a valid email address.');
+    return;
+  }
+
+  google.script.run.withSuccessHandler(clearForm).addFormData(formData);
+}
+
+function clearForm() {
+  document.getElementById('dataForm').reset();
+  alert('Data added successfully!');
+}
+
+function refresh(){
+  google.script.run.formatData();
+}
+
+</script>
+
+</body>
+</html>
